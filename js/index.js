@@ -10,6 +10,7 @@ document.getElementById("start-button").onclick = () => {
 let currentGame;
 
 function startGame() {
+  
   //Instantiate new game
   currentGame = new Game();
   //Instantiate new car
@@ -17,6 +18,7 @@ function startGame() {
   //Assign my new car to my new game
   currentGame.car = currentCar;
   currentGame.car.draw();
+  currentGame.startGame();
   cancelAnimationFrame(currentGame.animationId);
   updateCanvas();
 }
@@ -29,11 +31,13 @@ function detectCollision(obstacle) {
   );
 }
 
+
+
 function updateCanvas() {
   context.clearRect(0, 0, raceCanvas.clientWidth, raceCanvas.clientHeight);
   currentGame.car.draw();
   currentGame.obstaclesFrequency++;
-  if (currentGame.obstaclesFrequency % 100 === 1) {
+  if (currentGame.obstaclesFrequency % 50 === 1) {
     const randomObstacleX = Math.floor(Math.random() * 450);
     const randomObstacleY = 0;
     const randomObstacleWidth = Math.floor(Math.random() * 50) + 20;
@@ -56,13 +60,10 @@ function updateCanvas() {
     //Check collision
     if (detectCollision(obstacle)) {
       currentGame.gameOver = true;
-      currentGame.obstaclesFrequency = 0;
-      currentGame.score = 0;
-      currentGame.obstacles = [];
-      document.getElementById("score").innerHTML = 0;
-      document.getElementById("game-board").style.display = "none";
-      cancelAnimationFrame(currentGame.animationId);
+     
       alert("BOOOOMM! GAME OVER!");
+      currentGame.setHighScores();
+      currentGame.restartGame();
     }
 
     if (obstacle.y > raceCanvas.height) {
